@@ -27,7 +27,7 @@ def pull(camera_path, app, stream):
     global result_dict
     cap = cv2.VideoCapture(camera_path)
     success, frame = cap.read()
-    print("pull stream success<=======")
+    # print("pull stream success<=======")
     # fps = FPSCounter("video")
     while success:
         # fps.count()
@@ -53,9 +53,9 @@ def pull(camera_path, app, stream):
             hours = minutes // 60
             minutes = minutes % 60
 
-        print("localtime", int(hours), int(minutes), int(seconds), int(milliseconds))
+        # print("localtime", int(hours), int(minutes), int(seconds), int(milliseconds))
         result_dict[str(int(hours)) + " " + str(int(minutes)) + " " + str(int(seconds)) + " " + str(int(milliseconds))] = get_emotion(gray)
-
+        print(result_dict)
     cv2.destroyAllWindows()
     cap.release()
 
@@ -80,9 +80,9 @@ def alter():
     localPort = res.get('originSock').get('local_port')
     regist = res.get('regist')
     if schema == "rtmp" and regist == True:
-        print("detect the stream======>")
+        # print("detect the stream======>")
         pull_path = "rtmp://" + localIp + ":" + str(localPort) + "//" + appNumber + "/" + streamId
-        print("begin to pull stream:" + pull_path)
+        # print("begin to pull stream:" + pull_path)
         t1 = threading.Thread(target=pull, args=(pull_path, appNumber, streamId))
         t1.start()
         # pull(pull_path, appNumber, streamId)
@@ -104,7 +104,9 @@ def process():
     # q.queue.clear()
     # for i in range(len(res_queue)):
     #     res[str(i)] = res_queue[i]
-    res = result_dict
+    res = {}
+    for key in result_dict.keys():
+        res[key] = result_dict[key]
     result_dict.clear()
     # print("its res")
     # print(res)
@@ -119,7 +121,7 @@ EMOTIONS = ["angry", "disgust", "scared", "happy", "sad", "surprised", "neutral"
 
 
 def get_emotion(gray):
-    print("begin emotion calc======>")
+    # print("begin emotion calc======>")
     faces = face_detection.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5,
                                             minSize=(30, 30), flags=cv2.CASCADE_SCALE_IMAGE)
 
